@@ -1,11 +1,11 @@
 void xsPlotCarbonCrossSection(){
     // Get the Results Files obtained by xsMakeResultFiles.cc, change the name for another variable:
   // Mumom, Mutheta, Pimom, Pitheta, Emupi, Thetamupi
-	TFile *f_grouped = new TFile("/data/pmartins/T2K/work/CCCoherent/xsToolMacros/xsFilesData/xsResults_Thetamupi_FGD1Grouped.root","READ");
+	TFile *f_grouped = new TFile("/data/pmartins/T2K/work/CCCoherent/xsToolMacros/xsFilesData/xsResults_Mumom_FGD1Grouped.root","READ");
 
   // Just to make sure the axis titles are set correctly on every plots
   // p_{#mu^{-}} , cos#theta_{#mu^{-}}, p_{#pi^{+}} , cos#theta_{#pi^{+}}, (E_{#pi^{+}}+E_{#mu^{-}}), #theta_{#pi^{+}#mu^{-}}
-  const char* variable = "#theta_{#pi^{+}#mu^{-}}";
+  const char* variable = "p_{#mu^{-}}";
 
   DrawDifferential(f_grouped, variable);
 
@@ -88,7 +88,7 @@ void DrawDifferential(TFile *file, const char* var){
 
   PlotResults(hresult_err_binned, hresult_stat_binned,hmctruth_binned, left_legend);
 
-  PlotTables(hresult_err_binned,hresult_stat_binned,hresult_syst_binned);
+  PlotTables(hresult_err_binned,hresult_stat_binned,hresult_syst_binned, hmctruth_binned);
 }
 
 void PlotResults(TH1* h_total, TH1* h_stat, TH1* h_mc, bool left_legend){
@@ -131,7 +131,7 @@ void PlotResults(TH1* h_total, TH1* h_stat, TH1* h_mc, bool left_legend){
   
 }
 
-void PlotTables(TH1* h_total, TH1* h_stat, TH1* h_syst ){
+void PlotTables(TH1* h_total, TH1* h_stat, TH1* h_syst,TH1* h_mc){
   h_syst->Scale(100); // Like all the other, change the unit
   cout << "Results for each bin:" << endl;
   for(int i=1;i<=h_total->GetNbinsX();i++){
@@ -139,6 +139,7 @@ void PlotTables(TH1* h_total, TH1* h_stat, TH1* h_syst ){
       << "\t stat: " << h_stat->GetBinError(i) <<" ("<<100*h_stat->GetBinError(i)/h_total->GetBinContent(i) <<" %) "<< setw(4)  
       << "\t syst: " << h_syst->GetBinError(i) <<" ("<<100*h_syst->GetBinError(i)/h_total->GetBinContent(i) <<" %) "<< setw(4)  
       << "\t stat+syst: " << h_total->GetBinError(i) << " ("<< 100*h_total->GetBinError(i)/h_total->GetBinContent(i) << " %)" << endl;
+      cout <<i<<"| bin edges: "<< h_total->GetBinLowEdge(i)<<"->"<< h_total->GetBinLowEdge(i)+h_total->GetBinWidth(i)<< setw(20) << "\t | bin truth value = "<<h_mc->GetBinContent(i) <<std::endl;
   }
   cout << "************************************************************************" << endl;
 }
